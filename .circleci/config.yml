@@ -42,9 +42,9 @@ jobs:
         LINE_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc) |
         echo Lines covered -- $LINE_COVERED |
         echo $LINE_MISSED |
-        TOTAL_LINES=$(($LINE_COVERED + $LINE_MISSED)) |
+        TOTAL_LINES=$((LINE_COVERED + LINE_MISSED)) |
         echo $TOTAL_LINES |
-        LINE_COVERAGE=$(($LINE_COVERED * $100 / $TOTAL_LINES)) |
+        LINE_COVERAGE=$((LINE_COVERED * 100 / TOTAL_LINES)) |
         echo $LINE_COVERAGE |
 
         if [ $LINE_COVERAGE -le 80 ]; then echo "Line coverage is below 80" | exit 1; fi
