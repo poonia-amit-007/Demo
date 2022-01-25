@@ -38,8 +38,8 @@ jobs:
     - run: mvn compile test
     - run: mvn jacoco:report
     - run: 
-        LINE_COVERED=$(cat target/site/jacoco/jacoco.csv | tail +2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc) |
-        LINE_MISSED=$(cat target/site/jacoco/jacoco.csv | tail +2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc) |
+        LINE_COVERED=$(cat target/site/jacoco/jacoco.csv | tail '+2' | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc) |
+        LINE_MISSED=$(cat target/site/jacoco/jacoco.csv | tail '+2' | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc) |
         echo Lines covered -- $LINE_COVERED |
         echo $LINE_MISSED |
         TOTAL_LINES=$(($LINE_COVERED+$LINE_MISSED)) |
