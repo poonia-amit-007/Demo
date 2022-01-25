@@ -37,7 +37,7 @@ jobs:
     # Test
     - run: mvn compile test
     - run: mvn jacoco:report
-    - run: echo $(cat target/site/jacoco/jacoco.csv | tail '+2' | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
+    - run: echo $(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
         
     # Save dependency cache
     - save_cache:
