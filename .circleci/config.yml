@@ -39,15 +39,10 @@ jobs:
     - run: mvn jacoco:report
     - run: |
         LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
-        echo $LINES_COVERED
         LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
-        echo $LINES_MISSED
         LINES_TOTAL=$((LINES_COVERED + LINES_MISSED))
-        echo $LINES_TOTAL
         
-        LINE_COVERAGE=$((LINES_COVERED * 100))
-        echo $LINE_COVERAGE
-        LINE_COVERAGE=$((LINE_COVERAGE / LINES_TOTAL))
+        LINE_COVERAGE=$((((LINES_COVERED * 100)) / LINES_TOTAL))
         echo $LINE_COVERAGE
         
         if [ $LINE_COVERAGE -le 80 ]
