@@ -36,6 +36,7 @@ jobs:
   
     # Test
     - run: mvn compile test
+    - run: jest --collect-coverage
     # Save dependency cache
     - save_cache:
         key: demo-{{ .Branch }}-
