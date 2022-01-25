@@ -42,7 +42,7 @@ jobs:
         echo $LINES_COVERED
         LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
         echo $LINES_MISSED
-        LINES_TOTAL=$($LINES_COVERED+$LINES_MISSED)
+        LINES_TOTAL=$(($LINES_COVERED + $LINES_MISSED))
         echo $LINES_TOTAL
         
         
