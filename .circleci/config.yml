@@ -45,9 +45,9 @@ jobs:
         LINES_TOTAL=$((LINES_COVERED + LINES_MISSED))
         echo $LINES_TOTAL
         
-        LINE_COVERAGE=$((LINE_COVERED * 100))
+        LINE_COVERAGE=$((LINES_COVERED * 100))
         echo $LINE_COVERAGE
-        LINE_COVERAGE=$((LINE_COVERAGE / TOTAL_LINES))
+        LINE_COVERAGE=$((LINE_COVERAGE / LINES_TOTAL))
         echo $LINE_COVERAGE
         
         
