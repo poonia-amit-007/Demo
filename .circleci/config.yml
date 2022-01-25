@@ -37,7 +37,7 @@ jobs:
     # Test
     - run: mvn compile test
     - run: mvn jacoco:report
-    - run: echo ($(tail -n +2 target/site/jacoco/jacoco.csv | cut -d ',' -f1) )
+    - run: cat target/site/jacoco/jacoco.csv
     # Save dependency cache
     - save_cache:
         key: demo-{{ .Branch }}-
