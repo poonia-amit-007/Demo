@@ -37,9 +37,7 @@ jobs:
     # Test
     - run: mvn compile test
     - run: mvn jacoco:report
-    - print_coverage:
-        arr_record1=( $(tail -n +2 target/site/jacoco/jacoco.csv | cut -d ',' -f1) )
-        echo arr_record1
+    - run: echo ($(tail -n +2 target/site/jacoco/jacoco.csv | cut -d ',' -f1) )
     # Save dependency cache
     - save_cache:
         key: demo-{{ .Branch }}-
