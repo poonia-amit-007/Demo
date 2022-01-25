@@ -43,7 +43,7 @@ jobs:
         echo Lines covered -- $LINE_COVERED |
         echo $LINE_MISSED |
         TOTAL_LINES=$((LINE_COVERED + LINE_MISSED)) |
-        echo $TOTAL_LINES |
+        echo $TOTAL_LINES
         
         
     # Save dependency cache
