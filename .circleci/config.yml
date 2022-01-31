@@ -35,6 +35,7 @@ jobs:
         - demo-
   
     - run: |
+        ls
         PREVIOUS_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
         PREVIOUS_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
         PREVIOUS_LINES_TOTAL=$((PREVIOUS_LINES_COVERED + PREVIOUS_LINES_MISSED))
