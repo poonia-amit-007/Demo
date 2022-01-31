@@ -35,36 +35,37 @@ jobs:
         - demo-
   
     - run: |
-        LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
-        LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
-        LINES_TOTAL=$((LINES_COVERED + LINES_MISSED))
+        PREVIOUS_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
+        PREVIOUS_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
+        PREVIOUS_LINES_TOTAL=$((LINES_COVERED + LINES_MISSED))
+        
+        PREVIOUS_LINE_COVERAGE=$((((PREVIOUS_LINES_COVERED * 100)) / PREVIOUS_LINES_TOTAL))
 
-        LINE_COVERAGE=$((((LINES_COVERED * 100)) / LINES_TOTAL))
-        echo previous lines total $LINES_TOTAL
-        echo previous coverage $LINE_COVERAGE
+        echo previous lines total $PREVIOUS_LINES_TOTAL
+        echo previous lines covered $PREVIOUS_LINES_COVERED
+        echo previous line coverage $PREVIOUS_LINE_COVERAGE
+        
 
-        if [ $LINE_COVERAGE -le 80 ]
-        then
-        echo "Line coverage is below 80"
-        exit 2
-        fi
     # Test
     - run: mvn compile test
     - run: mvn jacoco:report
     - run: |
-        LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
-        LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
-        LINES_TOTAL=$((LINES_COVERED + LINES_MISSED))
+        CURRENT_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
+        CURRENT_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
+        CURRENT_LINES_TOTAL=$((LINES_COVERED + LINES_MISSED))
         
-        LINE_COVERAGE=$((((LINES_COVERED * 100)) / LINES_TOTAL))
-        echo new total lines $LINES_TOTAL
-        echo new coverage $LINE_COVERAGE
+        CURRENT_LINE_COVERAGE=$((((CURRENT_LINES_COVERED * 100)) / CURRENT_LINES_TOTAL))
         
-        if [ $LINE_COVERAGE -le 80 ]
-        then
-        echo "Line coverage is below 80"
-        exit 2
-        fi
+        echo current lines total $CURRENT_LINES_TOTAL
+        echo current lines covered $CURRENT_LINES_COVERED
+        echo current line coverage $CURRENT_LINE_COVERAGE
+        
+        NEW_LINES_TOTAL=$((CURRENT_LINES_TOTAL - PREVIOUS_LINES_TOTAL))
+        NEW_LINES_COVERED=$((CURRENT_LINES_COVERED - PREVIOUS_LINES_COVERED))
+        NEW_CODE_LINE_COVERAGE=$((((NEW_LINES_COVERED * 100)) / NEW_LINES_TOTAL))
+        echo newly added total lines $NEW_LINES_TOTAL
+        echo newly added code coverage $NEW_CODE_LINE_COVERAGE
+        
         
         
         
