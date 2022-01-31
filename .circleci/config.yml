@@ -34,15 +34,15 @@ jobs:
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
         - demo-
   
-      - run: |
+    - run: |
         LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
         LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
         LINES_TOTAL=$((LINES_COVERED + LINES_MISSED))
-        
+
         LINE_COVERAGE=$((((LINES_COVERED * 100)) / LINES_TOTAL))
         echo previous lines total $LINES_TOTAL
         echo previous coverage $LINE_COVERAGE
-        
+
         if [ $LINE_COVERAGE -le 80 ]
         then
         echo "Line coverage is below 80"
