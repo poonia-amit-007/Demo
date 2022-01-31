@@ -93,4 +93,4 @@ jobs:
     - store_artifacts:
         path: /tmp/circleci-test-results
     - store_artifacts:
-        path: target
+        path: target/site/jacoco/jacoco.csv
