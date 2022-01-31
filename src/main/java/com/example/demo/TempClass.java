@@ -9,4 +9,6 @@ public class TempClass {
     public int multiplyByThree(int value) {
         return 3*value;
     }
+
+    public int multiplyByFour(int value) {return 4*value;}
 }
