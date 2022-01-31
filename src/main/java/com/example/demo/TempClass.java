@@ -11,4 +11,6 @@ public class TempClass {
     }
 
     public int multiplyByFour(int value) {return 4*value;}
+
+    public int multiplyByFive(int value) {return 5*value;}
 }
