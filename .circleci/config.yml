@@ -74,7 +74,7 @@ jobs:
     - store_artifacts:
         path: target/site/jacoco/jacoco.csv
 
- build2:
+  build:
     working_directory: ~/poonia-amit-007/Demo
     parallelism: 1
     shell: /bin/bash --login
