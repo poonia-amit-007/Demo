@@ -32,9 +32,7 @@ jobs:
         - demo
     - run: echo $CIRCLE_BRANCH
     - run: ls
-    - run:
-        name: Code coverage check
-        command: |
+    - run: |
         cd Demo
         ls
         git checkout main
