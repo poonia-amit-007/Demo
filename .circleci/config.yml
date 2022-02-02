@@ -30,6 +30,7 @@ jobs:
         - demo-main-
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
         - demo
+    - run: echo $CIRCLE_BRANCH
     - run: ls
     - run: |
         cd Demo
