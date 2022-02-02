@@ -33,6 +33,7 @@ jobs:
     - run: echo $CIRCLE_BRANCH
     - run: ls
     - run: |
+        cd Demo
         git checkout main
         mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
         mvn compile test
