@@ -19,7 +19,7 @@ jobs:
     steps:
     # Machine Setup
     # The following `checkout` command checks out your code to your working directory
-    - checkout
+    - run: git checkout main
     # Prepare for artifact and test results
     # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
@@ -32,19 +32,7 @@ jobs:
         # Default branch if not
         - demo-main-
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-        - demo-
-  
-    - run: |
-        ls
-        PREVIOUS_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
-        PREVIOUS_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
-        PREVIOUS_LINES_TOTAL=$((PREVIOUS_LINES_COVERED + PREVIOUS_LINES_MISSED))
-        
-        PREVIOUS_LINE_COVERAGE=$((((PREVIOUS_LINES_COVERED * 100)) / PREVIOUS_LINES_TOTAL))
-
-        echo previous lines total $PREVIOUS_LINES_TOTAL
-        echo previous lines covered $PREVIOUS_LINES_COVERED
-        echo previous line coverage $PREVIOUS_LINE_COVERAGE
+        - demo
         
 
     # Test
@@ -61,14 +49,79 @@ jobs:
         echo current lines covered $CURRENT_LINES_COVERED
         echo current line coverage $CURRENT_LINE_COVERAGE
         
-        NEW_LINES_TOTAL=$((CURRENT_LINES_TOTAL - PREVIOUS_LINES_TOTAL))
-        NEW_LINES_COVERED=$((CURRENT_LINES_COVERED - PREVIOUS_LINES_COVERED))
-        NEW_CODE_LINE_COVERAGE=$((((NEW_LINES_COVERED * 100)) / NEW_LINES_TOTAL))
-        echo newly added total lines $NEW_LINES_TOTAL
-        echo newly added code coverage $NEW_CODE_LINE_COVERAGE
+    # Save dependency cache
+    - save_cache:
+        key: demo-{{ .Branch }}-
+        paths:
+        # This is a broad list of cache paths to include many possible development environments
+        # You can probably delete some of these entries
+        - vendor/bundle
+        - ~/virtualenvs
+        - ~/.m2
+        - ~/.ivy2
+        - ~/.bundle
+        - ~/.go_workspace
+        - ~/.gradle
+        - ~/.cache/bower
+    # Save test results
+    - store_test_results:
+        path: /tmp/circleci-test-results
+    # Save artifacts
+    - store_artifacts:
+        path: /tmp/circleci-artifacts
+    - store_artifacts:
+        path: /tmp/circleci-test-results
+    - store_artifacts:
+        path: target/site/jacoco/jacoco.csv
+
+ build2:
+    working_directory: ~/poonia-amit-007/Demo
+    parallelism: 1
+    shell: /bin/bash --login
+    # see https://circleci.com/docs/2.0/env-vars/#interpolating-environment-variables-to-set-other-environment-variables .
+    environment:
+      CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+    # The following configuration line tells CircleCI to use the specified docker image as the runtime environment for your job.
+    # We have selected a pre-built image that mirrors the build environment we use on the 1.0 platform.
+    # For more information on choosing an image (or alternatively using a VM instead of a container) see
+    # https://circleci.com/docs/2.0/executor-types/
+    # To see the list of pre-built images that CircleCI provides for most common languages see
+    # https://circleci.com/docs/2.0/circleci-images/
+    docker:
+    - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
+    steps:
+    # Machine Setup
+    # The following `checkout` command checks out your code to your working directory
+    - checkout
+    # Prepare for artifact and test results
+    # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
+    - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+    # Dependencies
+    # Restore the dependency cache
+    - restore_cache:
+        keys:
+        # This branch if available
+        - demo-{{ .Branch }}-
+        # Default branch if not
+        - demo-main-
+        # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
+        - demo
         
+
+    # Test
+    - run: mvn compile test
+    - run: mvn jacoco:report
+    - run: |
+        CURRENT_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
+        CURRENT_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
+        CURRENT_LINES_TOTAL=$((CURRENT_LINES_COVERED + CURRENT_LINES_MISSED))
         
+        CURRENT_LINE_COVERAGE=$((((CURRENT_LINES_COVERED * 100)) / CURRENT_LINES_TOTAL))
         
+        echo current lines total $CURRENT_LINES_TOTAL
+        echo current lines covered $CURRENT_LINES_COVERED
+        echo current line coverage $CURRENT_LINE_COVERAGE
         
     # Save dependency cache
     - save_cache:
