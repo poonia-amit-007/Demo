@@ -20,15 +20,6 @@ jobs:
     # Machine Setup
     # The following `checkout` command checks out your code to your working directory
     - run: git clone https://github.com/poonia-amit-007/Demo.git
-    - run: ls
-    - run: |
-        cd Demo
-        ls
-        git checkout main
-   
-    # Prepare for artifact and test results
-    # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
-    - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
     # Dependencies
     # Restore the dependency cache
     - restore_cache:
@@ -39,12 +30,14 @@ jobs:
         - demo-main-
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
         - demo
-        
-
-    # Test
-    - run: mvn compile test
-    - run: mvn jacoco:report
+    - run: ls
     - run: |
+        cd Demo
+        ls
+        git checkout main
+        mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+        mvn compile test
+        mvn jacoco:report
         CURRENT_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
         CURRENT_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
         CURRENT_LINES_TOTAL=$((CURRENT_LINES_COVERED + CURRENT_LINES_MISSED))
