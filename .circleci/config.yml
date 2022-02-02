@@ -21,9 +21,11 @@ jobs:
     # The following `checkout` command checks out your code to your working directory
     - run: git clone https://github.com/poonia-amit-007/Demo.git
     - run: ls
-    - run: cd Demo
-    - run: ls
-    - run: git checkout main
+    - run: |
+        cd Demo
+        ls
+        git checkout main
+   
     # Prepare for artifact and test results
     # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
