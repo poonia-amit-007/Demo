@@ -22,6 +22,7 @@ jobs:
     - run: git clone https://github.com/poonia-amit-007/Demo.git
     - run: ls
     - run: cd Demo
+    - run: ls
     - run: git checkout main
     # Prepare for artifact and test results
     # 'See docs on artifact collection here https://circleci.com/docs/2.0/artifacts/'
