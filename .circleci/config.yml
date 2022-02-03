@@ -20,6 +20,8 @@ jobs:
     # Machine Setup
     # The following `checkout` command checks out your code to your working directory
     - run: git clone https://github.com/poonia-amit-007/Demo.git
+    - run: cd Demo
+    - run: ls
     # Dependencies
     # Restore the dependency cache
     - restore_cache:
