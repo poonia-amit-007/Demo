@@ -35,50 +35,52 @@ jobs:
     - run: echo $CIRCLE_BRANCH
     - run: ls
     - run: |
-        cd Demo
-        git checkout main
-        mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-        mvn compile test
-        mvn jacoco:report
-        PREVIOUS_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
-        PREVIOUS_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
-        PREVIOUS_LINES_TOTAL=$((PREVIOUS_LINES_COVERED + PREVIOUS_LINES_MISSED))
-        PREVIOUS_LINE_COVERAGE=$((((PREVIOUS_LINES_COVERED * 100)) / PREVIOUS_LINES_TOTAL))
-        
-        git checkout $CIRCLE_BRANCH
-        mvn compile test
-        mvn jacoco:report
-        
-        CURRENT_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
-        CURRENT_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
-        CURRENT_LINES_TOTAL=$((CURRENT_LINES_COVERED + CURRENT_LINES_MISSED))
-        CURRENT_LINE_COVERAGE=$((((CURRENT_LINES_COVERED * 100)) / CURRENT_LINES_TOTAL))
-        
-        echo previous lines total $PREVIOUS_LINES_TOTAL
-        echo previous lines covered $PREVIOUS_LINES_COVERED
-        echo previous line coverage $PREVIOUS_LINE_COVERAGE
-        
-        echo current lines total $CURRENT_LINES_TOTAL
-        echo current lines covered $CURRENT_LINES_COVERED
-        echo current line coverage $CURRENT_LINE_COVERAGE
-        
-        if [ $PREVIOUS_LINES_TOTAL -lt $CURRENT_LINES_TOTAL ]
-        then
-        NEW_LINES_TOTAL=$((CURRENT_LINES_TOTAL - PREVIOUS_LINES_TOTAL))
-        NEW_LINES_COVERED=$((CURRENT_LINES_COVERED - PREVIOUS_LINES_COVERED))
-        if [ $NEW_LINES_COVERED -lt 0 ]
-        then
-        echo current covered lines are less than previously covered lines
-        exit 2
-        fi
-        NEW_LINE_COVERAGE=$((((NEW_LINES_COVERED * 100)) / NEW_LINES_TOTAL))
-        echo New line coverage $NEW_LINE_COVERAGE
-        if [ $NEW_LINE_COVERAGE -lt 80 ]
-        then
-        echo coverage for new lines is less than 80
-        exit 2
-        fi
-        fi
+        name: Tets
+        command:
+          cd Demo
+          git checkout main
+          mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+          mvn compile test
+          mvn jacoco:report
+          PREVIOUS_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
+          PREVIOUS_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
+          PREVIOUS_LINES_TOTAL=$((PREVIOUS_LINES_COVERED + PREVIOUS_LINES_MISSED))
+          PREVIOUS_LINE_COVERAGE=$((((PREVIOUS_LINES_COVERED * 100)) / PREVIOUS_LINES_TOTAL))
+
+          git checkout $CIRCLE_BRANCH
+          mvn compile test
+          mvn jacoco:report
+
+          CURRENT_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
+          CURRENT_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
+          CURRENT_LINES_TOTAL=$((CURRENT_LINES_COVERED + CURRENT_LINES_MISSED))
+          CURRENT_LINE_COVERAGE=$((((CURRENT_LINES_COVERED * 100)) / CURRENT_LINES_TOTAL))
+
+          echo previous lines total $PREVIOUS_LINES_TOTAL
+          echo previous lines covered $PREVIOUS_LINES_COVERED
+          echo previous line coverage $PREVIOUS_LINE_COVERAGE
+
+          echo current lines total $CURRENT_LINES_TOTAL
+          echo current lines covered $CURRENT_LINES_COVERED
+          echo current line coverage $CURRENT_LINE_COVERAGE
+
+          if [ $PREVIOUS_LINES_TOTAL -lt $CURRENT_LINES_TOTAL ]
+          then
+          NEW_LINES_TOTAL=$((CURRENT_LINES_TOTAL - PREVIOUS_LINES_TOTAL))
+          NEW_LINES_COVERED=$((CURRENT_LINES_COVERED - PREVIOUS_LINES_COVERED))
+          if [ $NEW_LINES_COVERED -lt 0 ]
+          then
+          echo current covered lines are less than previously covered lines
+          exit 2
+          fi
+          NEW_LINE_COVERAGE=$((((NEW_LINES_COVERED * 100)) / NEW_LINES_TOTAL))
+          echo New line coverage $NEW_LINE_COVERAGE
+          if [ $NEW_LINE_COVERAGE -lt 80 ]
+          then
+          echo coverage for new lines is less than 80
+          exit 2
+          fi
+          fi
     
     # Save dependency cache
     - save_cache:
