@@ -41,6 +41,9 @@ jobs:
           git checkout main
           mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
           mvn compile test
+          if [[ "$?" -ne 0 ]] ; then
+            echo 'could not perform tests'; exit 2
+          fi
           mvn jacoco:report
           PREVIOUS_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
           PREVIOUS_LINES_MISSED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $8}' | xargs | sed -e 's/\ /+/g' | bc)
@@ -49,6 +52,9 @@ jobs:
 
           git checkout $CIRCLE_BRANCH
           mvn compile test
+          if [[ "$?" -ne 0 ]] ; then
+              echo 'could not perform tests'; exit 2
+          fi
           mvn jacoco:report
 
           CURRENT_LINES_COVERED=$(cat target/site/jacoco/jacoco.csv | tail --lines=+2 | awk -F , '{print $9}' | xargs | sed -e 's/\ /+/g' | bc)
