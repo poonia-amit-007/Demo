@@ -35,7 +35,7 @@ class TempClassTest {
 
     @Test
     public void testMultiplyByFive() {
-        int expected = 10;
+        int expected = 11;
         int actual = tempClass.multiplyByFive(2);
         assertEquals(expected, actual);
     }
