@@ -60,18 +60,18 @@ jobs:
         echo current lines covered $CURRENT_LINES_COVERED
         echo current line coverage $CURRENT_LINE_COVERAGE
         
-        if [ PREVIOUS_LINES_TOTAL -lt CURRENT_LINES_TOTAL ]
+        if [ $PREVIOUS_LINES_TOTAL -lt $CURRENT_LINES_TOTAL ]
         then
         NEW_LINES_TOTAL=$((CURRENT_LINES_TOTAL - PREVIOUS_LINES_TOTAL))
         NEW_LINES_COVERED=$((CURRENT_LINES_COVERED - PREVIOUS_LINES_COVERED))
-        if [ NEW_LINES_COVERED -lt 0 ]
+        if [ $NEW_LINES_COVERED -lt 0 ]
         then
         echo current covered lines are less than previously covered lines
         exit 2
         fi
         NEW_LINE_COVERAGE=$((((NEW_LINES_COVERED * 100)) / NEW_LINES_TOTAL))
         echo New line coverage $NEW_LINE_COVERAGE
-        if [ NEW_LINE_COVERAGE -lt 80 ]
+        if [ $NEW_LINE_COVERAGE -lt 80 ]
         then
         echo coverage for new lines is less than 80
         exit 2
